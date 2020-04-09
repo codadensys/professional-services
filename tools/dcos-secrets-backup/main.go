@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/justinrlee/dcos-secrets-backup/cmd"
+import "./cmd"
 
 func main() {
 	cmd.Execute()

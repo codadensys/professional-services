@@ -1,3 +1,5 @@
+
+// +build !windows !darwin !linux
 package cmd
 
 import (
@@ -136,6 +138,7 @@ func (c *Cluster) GetSecret(secretID string, cipherKey string, pool chan int, se
 
 	fmt.Printf("Getting secret '%s'\n", secretID)
 	secretBody, returnCode, headers, err := c.Call("GET", "/secrets/v1/secret/default/"+secretID, nil, nil)
+
 	if err != nil || returnCode != http.StatusOK {
 		fmt.Printf("Unable to retrieve secret '%s'\n. [%d]: %s", secretID, returnCode, err.Error)
 		secretChan <- Secret{ID: ""}
@@ -177,7 +180,11 @@ func (c *Cluster) PushSecret(secret Secret, cipherKey string, pool chan int, rch
 			Value string `json:"value"`
 		}
 		err := json.Unmarshal(content, &t)
-		if err != nil || t.Value == "" {
+//		if err != nil || t.Value == "" {
+//			fmt.Printf("Unable to decrypt [%s].  You likely have an invalid cipherkey.\n", secret.ID)
+//			os.Exit(1)
+//		}
+		if err != nil  {
 			fmt.Printf("Unable to decrypt [%s].  You likely have an invalid cipherkey.\n", secret.ID)
 			os.Exit(1)
 		}
